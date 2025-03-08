@@ -1,0 +1,17 @@
+{
+  "type": "module",
+  "name": "trabalho_oop_pucrs_fase_1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bycontract": "^2.0.11",
+    "prompt-sync": "^4.2.0"
+  }
+}
