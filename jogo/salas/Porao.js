@@ -1,7 +1,6 @@
 import { Engine, Sala } from "../basicas.js";
 import { BailarinaMusical, PortaDoPorao } from "../objetos/index.js";
 import { ChaveDoPorao, ChaveDeFenda, Martelo, Grampo, Isqueiro } from "../ferramentas/index.js";
-import { SalaDeEstar } from "../salas/index.js";
 
 export class Porao extends Sala {
     /** @param {Engine} engine */
@@ -56,7 +55,7 @@ export class Porao extends Sala {
 
         const abriuPorta = ferramenta instanceof ChaveDoPorao && objeto instanceof PortaDoPorao;
         if (abriuPorta) {
-            const salaDeEstar = new SalaDeEstar(this.engine);
+            const salaDeEstar = this.engine.salas.get("Sala_de_Estar");
             this.portas.set(salaDeEstar.nome, salaDeEstar);
             this.objetos.delete(objeto);
         }

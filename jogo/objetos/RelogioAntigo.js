@@ -1,14 +1,18 @@
 import { Objeto } from "../basicas.js";
-import { ChaveDoPorao } from "../ferramentas/index.js";
 
 export class RelogioAntigo extends Objeto {
     constructor() {
         super(
-            "Porta do Porão",
+            "Relogio Antigo",
             "Uma verdadeira relíquia antiquada... Os ponteiros parecem estar travados.",
-            "A porta está destrancada, agora, você pode sair para a sala de estar."
+            "Um compartimento soltou-se para fora."
         );
     }
-    
-    
+
+    /** @param {string} horario */
+    ajustaPonteiros(horario) {
+        super.ajustaPonteiros(horario);
+        this.acaoOk = horario === "15:10:00";
+        return this.acaoOk;
+    }
 }

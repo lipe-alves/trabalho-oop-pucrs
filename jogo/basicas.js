@@ -5,7 +5,7 @@ const prompt = promptsync({ sigint: true });
 
 /** @param {string} nome */
 function ajustaNome(nome) {
-    validate(arguments, ["String"]);
+    validate(nome, "String");
     nome = nome.trim();
     nome = nome.replace(/\s+/g, " ");
     nome = nome.replace(/\s/g, "_");
@@ -18,7 +18,7 @@ export class Ferramenta {
 
     /** @param {string} nome */
     constructor(nome) {
-        validate(arguments, ["String"]);
+        validate(nome, "String");
         this.#nome = ajustaNome(nome);
     }
 
@@ -49,14 +49,14 @@ export class Mochila {
 
     /** @param {string} nomeFerramenta */
     pega(nomeFerramenta) {
-        validate(arguments, ["String"]);
+        validate(nomeFerramenta, "String");
         let ferramenta = this.#ferramentas.find(f => f.nome === nomeFerramenta);
         return ferramenta;
     }
 
     /** @param {string} nomeFerramenta */
     tem(nomeFerramenta) {
-        validate(arguments, ["String"]);
+        validate(nomeFerramenta, "String");
         return this.#ferramentas.some(f => f.nome === nomeFerramenta);
     }
 
@@ -77,7 +77,9 @@ export class Objeto {
      * @param {string} descricaoDepoisAcao
      */
     constructor(nome, descricaoAntesAcao, descricaoDepoisAcao) {
-        validate(arguments, ["String", "String", "String"]);
+        validate(nome, "String");
+        validate(descricaoAntesAcao, "String");
+        validate(descricaoDepoisAcao, "String");
         this.#nome = ajustaNome(nome);
         this.#descricaoAntesAcao = descricaoAntesAcao;
         this.#descricaoDepoisAcao = descricaoDepoisAcao;
@@ -107,14 +109,21 @@ export class Objeto {
 
     /** @param {string} codigo */
     discaCodigo(codigo) {
-        validate(arguments, ["String"]);
+        validate(codigo, "String");
+        this.acaoOk = false;
+        return this.acaoOk;
+    }
+
+    /** @param {string} horario */
+    ajustaPonteiros(horario) {
+        validate(horario, "String");
         this.acaoOk = false;
         return this.acaoOk;
     }
 
     /** @param {Ferramenta} ferramenta */
     usa(ferramenta) {
-        validate(arguments, [Ferramenta]);
+        validate(ferramenta, Ferramenta);
         this.acaoOk = false;
         return false;
     }
@@ -139,7 +148,8 @@ export class Sala {
      * @param {string} descricao 
      */
     constructor(nome, engine, descricao = "") {
-        validate(arguments, ["String", Engine]);
+        validate(nome, "String");
+        validate(engine, Engine);
         validate(descricao, "String");
         this.#nome = ajustaNome(nome);
         this.#descricao = descricao;
@@ -149,24 +159,24 @@ export class Sala {
         this.#engine = engine;
     }
 
-    get nome() { 
-        return this.#nome; 
+    get nome() {
+        return this.#nome;
     }
 
-    get objetos() { 
-        return this.#objetos; 
+    get objetos() {
+        return this.#objetos;
     }
 
-    get ferramentas() { 
-        return this.#ferramentas; 
+    get ferramentas() {
+        return this.#ferramentas;
     }
 
-    get portas() { 
-        return this.#portas; 
+    get portas() {
+        return this.#portas;
     }
 
-    get engine() { 
-        return this.#engine; 
+    get engine() {
+        return this.#engine;
     }
 
     get descricao() {
@@ -245,16 +255,33 @@ export class Sala {
     entra(porta) {
         return this.sai(porta);
     }
-    
+
+    /**
+     * @param {string} nomeObjeto
+     * @param {string} horario
+     */
+    ajustaPonteiros(nomeObjeto, horario) {
+        validate(nomeObjeto, "String");
+        validate(horario, "String");
+
+        if (!this.tem(nomeObjeto)) {
+            return false;
+        }
+
+        const objeto = this.objetos.get(nomeObjeto);
+        return objeto.ajustaPonteiros(horario);
+    }
+
     /** 
      * @param {string} nomeObjeto
      * @param {string} codigo  
      */
     discaCodigo(nomeObjeto, codigo) {
-        validate(arguments, ["String", "String"]);
-        
-		if (!this.tem(nomeObjeto)){
-			return false;
+        validate(nomeObjeto, "String");
+        validate(codigo, "String");
+
+        if (!this.tem(nomeObjeto)) {
+            return false;
         }
 
         const objeto = this.objetos.get(nomeObjeto);
@@ -263,10 +290,10 @@ export class Sala {
 
     /** @param {string} nomeFerramenta */
     acende(nomeFerramenta) {
-        validate(arguments, ["String"]);
+        validate(nomeFerramenta, "String");
 
-        if (!this.engine.mochila.tem(nomeFerramenta)){
-			return false;
+        if (!this.engine.mochila.tem(nomeFerramenta)) {
+            return false;
         }
 
         const ferramenta = this.engine.mochila.pega(nomeFerramenta);
@@ -275,10 +302,10 @@ export class Sala {
 
     /** @param {string} nomeObjeto */
     empurra(nomeObjeto) {
-        validate(arguments, ["String"]);
-        
-		if (!this.tem(nomeObjeto)){
-			return false;
+        validate(nomeObjeto, "String");
+
+        if (!this.tem(nomeObjeto)) {
+            return false;
         }
 
         const objeto = this.objetos.get(nomeObjeto);
@@ -289,39 +316,46 @@ export class Sala {
      * @param {string} nomeFerramenta 
      * @param {string} nomeObjeto  
      */
-    usa(nomeFerramenta, nomeObjeto) { 
-        validate(arguments, ["String", "String"]);
-        
-        if (!this.engine.mochila.tem(nomeFerramenta)){
-			return false;
+    usa(nomeFerramenta, nomeObjeto) {
+        validate(nomeFerramenta, "String");
+        validate(nomeObjeto, "String");
+
+        if (!this.engine.mochila.tem(nomeFerramenta)) {
+            return false;
         }
-        
-		if (!this.tem(nomeObjeto)){
-			return false;
+
+        if (!this.tem(nomeObjeto)) {
+            return false;
         }
-        
+
         const objeto = this.objetos.get(nomeObjeto);
         const ferramenta = this.engine.mochila.pega(nomeFerramenta);
         const acaoOk = objeto.usa(ferramenta);
 
-        return acaoOk; 
+        return acaoOk;
     }
 }
 
 export class Engine {
     #mochila;
+    #salas;
     #salaCorrente;
     #fim;
 
     constructor() {
         this.#mochila = new Mochila();
         this.#salaCorrente = null;
+        this.#salas = new Map();
         this.#fim = false;
         this.criaCenario();
     }
 
     get mochila() {
         return this.#mochila;
+    }
+
+    get salas() {
+        return this.#salas;
     }
 
     get salaCorrente() {
@@ -369,11 +403,22 @@ export class Engine {
                         console.log(`Não é possível usar ${tokens[1]} sobre ${tokens[2]} nesta sala`);
                     }
                     break;
-                case "codigo":
-                    if (this.salaCorrente.discaCodigo(tokens[1])) {
+                case "ajusta":
+                case "ajusta_ponteiros":
+                case "ajusta_horario":
+                    if (this.salaCorrente.ajustaPonteiros(tokens[1], tokens[2])) {
                         console.log("Feito !!");
                     } else {
-                        console.log(`Não é possível acender ${tokens[1]} nesta sala`);
+                        console.log("Nada aconteceu!");
+                    }
+                    break;
+                case "disca":
+                case "disca_codigo":
+                case "codigo":
+                    if (this.salaCorrente.discaCodigo(tokens[1], tokens[2])) {
+                        console.log("Feito !!");
+                    } else {
+                        console.log("Código errado!");
                     }
                     break;
                 case "acende":
