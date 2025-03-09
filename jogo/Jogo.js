@@ -1,5 +1,5 @@
 import { Engine } from "./basicas.js";
-import { Porao, SalaDeEstar, Quarto, Cozinha } from "./salas/index.js";
+import { Porao, SalaDeEstar, Quarto, Cozinha, SalaScreta } from "./salas/index.js";
 
 export class Jogo extends Engine {
     constructor() {
@@ -11,17 +11,20 @@ export class Jogo extends Engine {
 
         if (!executou) {
             switch (comando) {
+                case "liga":
+                case "empurra":
+                case "acende":
                 case "abre": {
                     const nomeObjeto = argumentos[0];
 
-                    if (typeof this.salaCorrente.abre === "function") {
-                        if (this.salaCorrente.abre(nomeObjeto)) {
+                    if (typeof this.salaCorrente[comando] === "function") {
+                        if (this.salaCorrente[comando](nomeObjeto)) {
                             console.log("Feito !!");
                         } else {
                             console.log("Nada aconteceu!");
                         }
                     } else {
-                        console.log("Não é possível executar esse comando nesta sala");
+                        console.log(`Não é possível ${comando}r ${nomeObjeto} nesta sala`);
                     }
                     break;
                 }
@@ -59,19 +62,6 @@ export class Jogo extends Engine {
                     }
                     break;
                 }
-                case "acende":
-                    const nomeObjeto = argumentos[0];
-
-                    if (typeof this.salaCorrente.acende === "function") {
-                        if (this.salaCorrente.acende(nomeObjeto)) {
-                            console.log("Feito !!");
-                        } else {
-                            console.log(`Não é possível acender ${nomeObjeto} nesta sala`);
-                        }
-                    } else {
-                        console.log("Não é possível executar esse comando nesta sala");
-                    }
-                    break;
                 default:
                     return false;
             }
@@ -87,19 +77,20 @@ export class Jogo extends Engine {
         const quarto = new Quarto(this);
         const salaDeEstar = new SalaDeEstar(this);
         const cozinha = new Cozinha(this);
+        const salaScreta = new SalaScreta(this);
 
         this.salas.set(porao.nome, porao);
         this.salas.set(salaDeEstar.nome, salaDeEstar);
         this.salas.set(quarto.nome, quarto);
         this.salas.set(cozinha.nome, cozinha);
+        this.salas.set(salaScreta.nome, salaScreta);
 
         salaDeEstar.portas.set(porao.nome, porao);
         salaDeEstar.portas.set(quarto.nome, quarto);
         salaDeEstar.portas.set(cozinha.nome, cozinha);
-
         cozinha.portas.set(salaDeEstar.nome, salaDeEstar);
-
         quarto.portas.set(salaDeEstar.nome, salaDeEstar);
+        salaScreta.portas.set(quarto.nome, quarto);
 
         this.salaCorrente = porao;
     }

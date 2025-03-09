@@ -5,13 +5,13 @@ export class Abajur extends Objeto {
     constructor() {
         super(
             "Abajur",
-            "O abajur está desligado.",
-            "O abajur está ligado e ilumina o quadro."
+            "O abajur está desligado."
         );
     }
 
     liga() {
-        this.acaoOk = true; 
+        this.acaoOk = true;
+        this.descricao = "O abajur está ligado e ilumina o quadro.";
         return this.acaoOk;
     }
 }

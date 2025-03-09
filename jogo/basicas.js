@@ -69,22 +69,18 @@ export class Mochila {
 
 export class Objeto {
     #nome;
-    #descricaoAntesAcao;
-    #descricaoDepoisAcao;
+    #descricao;
     #acaoOk;
 
     /**
      * @param {string} nome
-     * @param {string} descricaoAntesAcao
-     * @param {string} descricaoDepoisAcao
+     * @param {string} descricao
      */
-    constructor(nome, descricaoAntesAcao, descricaoDepoisAcao) {
+    constructor(nome, descricao) {
         validate(nome, "String");
-        validate(descricaoAntesAcao, "String");
-        validate(descricaoDepoisAcao, "String");
+        validate(descricao, "String");
         this.#nome = ajustaNome(nome);
-        this.#descricaoAntesAcao = descricaoAntesAcao;
-        this.#descricaoDepoisAcao = descricaoDepoisAcao;
+        this.#descricao = descricao;
         this.#acaoOk = false;
     }
 
@@ -102,11 +98,12 @@ export class Objeto {
     }
 
     get descricao() {
-        if (!this.acaoOk) {
-            return this.#descricaoAntesAcao;
-        } else {
-            return this.#descricaoDepoisAcao;
-        }
+        return this.#descricao;
+    }
+
+    set descricao(descricao) {
+        validate(descricao, "String");
+        this.#descricao = descricao;
     }
 
     /** @param {Ferramenta} ferramenta */

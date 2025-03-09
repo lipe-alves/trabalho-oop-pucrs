@@ -11,3 +11,5 @@ export * from "./Abajur.js";
 export * from "./Armario.js";
 export * from "./QuadroEmpoeirado.js";
 export * from "./Travesseiro.js";
+export * from "./PortaSecreta.js";
+export * from "./Cofre.js";
