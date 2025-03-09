@@ -7,3 +7,4 @@ export * from "./Lupa.js";
 export * from "./Faca.js";
 export * from "./PanoDePrato.js";
 export * from "./ChaveSecreta.js";
+export * from "./Pinca.js";

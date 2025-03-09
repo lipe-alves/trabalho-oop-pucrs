@@ -3,3 +3,4 @@ export * from "./SalaDeEstar.js";
 export * from "./Quarto.js";
 export * from "./Cozinha.js";
 export * from "./SalaSecreta.js";
+export * from "./Banheiro.js";

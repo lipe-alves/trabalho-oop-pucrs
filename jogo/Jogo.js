@@ -1,5 +1,12 @@
 import { Engine } from "./basicas.js";
-import { Porao, SalaDeEstar, Quarto, Cozinha, SalaScreta } from "./salas/index.js";
+import { 
+    Porao, 
+    SalaDeEstar, 
+    Quarto, 
+    Cozinha, 
+    SalaSecreta, 
+    Banheiro 
+} from "./salas/index.js";
 
 export class Jogo extends Engine {
     constructor() {
@@ -24,13 +31,12 @@ export class Jogo extends Engine {
                             console.log("Nada aconteceu!");
                         }
                     } else {
-                        console.log(`Não é possível ${comando}r ${nomeObjeto} nesta sala`);
+                        const verboInfinitivo = comando === "abre" ? "abrir" : `${comando}r`;
+                        console.log(`Não é possível ${verboInfinitivo} ${nomeObjeto} nesta sala`);
                     }
                     break;
                 }
-                case "ajusta":
-                case "ajusta_ponteiros":
-                case "ajusta_horario": {
+                case "ajusta": {
                     const nomeObjeto = argumentos[0];
                     const horario = argumentos[1];
 
@@ -45,9 +51,7 @@ export class Jogo extends Engine {
                     }
                     break;
                 }
-                case "disca":
-                case "disca_codigo":
-                case "codigo": {
+                case "disca": {
                     const nomeObjeto = argumentos[0];
                     const codigo = argumentos[1];
 
@@ -77,19 +81,23 @@ export class Jogo extends Engine {
         const quarto = new Quarto(this);
         const salaDeEstar = new SalaDeEstar(this);
         const cozinha = new Cozinha(this);
-        const salaScreta = new SalaScreta(this);
+        const salaScreta = new SalaSecreta(this);
+        const banheiro = new Banheiro(this);
 
         this.salas.set(porao.nome, porao);
         this.salas.set(salaDeEstar.nome, salaDeEstar);
         this.salas.set(quarto.nome, quarto);
         this.salas.set(cozinha.nome, cozinha);
         this.salas.set(salaScreta.nome, salaScreta);
+        this.salas.set(banheiro.nome, banheiro);
 
         salaDeEstar.portas.set(porao.nome, porao);
         salaDeEstar.portas.set(quarto.nome, quarto);
-        salaDeEstar.portas.set(cozinha.nome, cozinha);
+        salaDeEstar.portas.set(cozinha.nome, cozinha);        
         cozinha.portas.set(salaDeEstar.nome, salaDeEstar);
         quarto.portas.set(salaDeEstar.nome, salaDeEstar);
+        quarto.portas.set(banheiro.nome, banheiro);
+        banheiro.portas.set(quarto.nome, quarto);
         salaScreta.portas.set(quarto.nome, quarto);
 
         this.salaCorrente = porao;
