@@ -7,3 +7,7 @@ export * from "./GavetaDebaixo.js";
 export * from "./GavetaDeCima.js";
 export * from "./Geladeira.js";
 export * from "./Joia.js";
+export * from "./Abajur.js";
+export * from "./Armario.js";
+export * from "./QuadroEmpoeirado.js";
+export * from "./Travesseiro.js";
