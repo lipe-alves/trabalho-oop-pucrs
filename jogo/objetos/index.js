@@ -13,4 +13,4 @@ export * from "./QuadroEmpoeirado.js";
 export * from "./Travesseiro.js";
 export * from "./PortaSecreta.js";
 export * from "./Cofre.js";
-export * from "./Pinca.js";
+export * from "./Pia.js";
