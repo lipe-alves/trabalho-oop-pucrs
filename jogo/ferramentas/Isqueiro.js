@@ -1,5 +1,6 @@
-import { Ferramenta } from "../basicas.js";
+import { Ferramenta, Sala } from "../basicas.js";
 import { Porao } from "../salas/index.js";
+import { validate } from "bycontract";
 
 export class Isqueiro extends Ferramenta {
     constructor() {
@@ -8,7 +9,7 @@ export class Isqueiro extends Ferramenta {
 
     /** @param {Sala} sala */
     acende(sala) {
-        super.acende(sala);
+        validate(sala, Sala);
         return sala instanceof Porao;
     }
 }

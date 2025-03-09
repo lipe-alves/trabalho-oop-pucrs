@@ -1,6 +1,7 @@
 import { Engine, Sala } from "../basicas.js";
 import { BailarinaMusical, PortaDoPorao } from "../objetos/index.js";
 import { ChaveDoPorao, ChaveDeFenda, Martelo, Grampo, Isqueiro } from "../ferramentas/index.js";
+import { validate } from "bycontract";
 
 export class Porao extends Sala {
     /** @param {Engine} engine */
@@ -13,7 +14,19 @@ export class Porao extends Sala {
 
     /** @param {string} nomeFerramenta */
     acende(nomeFerramenta) {
-        const acaoOk = super.acende(nomeFerramenta);
+        validate(nomeFerramenta, "String");
+
+        if (!this.engine.mochila.tem(nomeFerramenta)) {
+            return false;
+        }
+
+        const ferramenta = this.engine.mochila.pega(nomeFerramenta);
+        if (!(ferramenta instanceof Isqueiro)) {
+            console.log("Não é possível acender esse item.");
+            return false;
+        }
+
+        const acaoOk = ferramenta.acende(this);
 
         if (acaoOk) {
             this.descricao = "O porão está mais iluminado do que antes. Agora você consegue ver diversos objetos e ferramentas disponíveis.";
@@ -53,11 +66,21 @@ export class Porao extends Sala {
             this.ferramentas.set(chaveEscondida.nome, chaveEscondida);
         }
 
-        const abriuPorta = ferramenta instanceof ChaveDoPorao && objeto instanceof PortaDoPorao;
+        const abriuPorta = (
+            objeto instanceof PortaDoPorao && (
+                ferramenta instanceof ChaveDoPorao || 
+                ferramenta instanceof Grampo
+            )
+        );
         if (abriuPorta) {
             const salaDeEstar = this.engine.salas.get("Sala_de_Estar");
             this.portas.set(salaDeEstar.nome, salaDeEstar);
             this.objetos.delete(objeto);
+
+            if (ferramenta instanceof Grampo) {
+                console.log("Grampo quebrou e não pode ser mais utilizado.");
+                this.engine.mochila.descarta(ferramenta.nome);
+            }
         }
 
         return true;

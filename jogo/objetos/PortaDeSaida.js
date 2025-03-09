@@ -1,4 +1,5 @@
 import { Objeto } from "../basicas.js";
+import { validate } from "bycontract";
 
 export class PortaDeSaida extends Objeto {
     constructor() {
@@ -10,7 +11,7 @@ export class PortaDeSaida extends Objeto {
     }
 
     discaCodigo(codigo) {
-        super.discaCodigo(codigo);
+        validate(codigo, "String");
         this.acaoOk = codigo === "5813";
         return this.acaoOk;
     }

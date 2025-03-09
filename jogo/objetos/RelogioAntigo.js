@@ -1,4 +1,5 @@
 import { Objeto } from "../basicas.js";
+import { validate } from "bycontract";
 
 export class RelogioAntigo extends Objeto {
     constructor() {
@@ -11,7 +12,7 @@ export class RelogioAntigo extends Objeto {
 
     /** @param {string} horario */
     ajustaPonteiros(horario) {
-        super.ajustaPonteiros(horario);
+        validate(horario, "String");
         this.acaoOk = horario === "15:10:00";
         return this.acaoOk;
     }

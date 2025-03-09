@@ -1,6 +1,6 @@
 import { Sala, Engine } from "../basicas.js";
-import { Quarto, Cozinha } from "../salas/index.js";
 import { RelogioAntigo, PortaDeSaida, Compartimento } from "../objetos/index.js";
+import { validate } from "bycontract";
 
 export class SalaDeEstar extends Sala {
     /** @param {Engine} engine */
@@ -14,27 +14,55 @@ export class SalaDeEstar extends Sala {
         this.objetos.set(portaDeSaida.nome, portaDeSaida);
     }
 
-    discaCodigo(nomeObjeto, codigo) {
-        const acaoOk = super.discaCodigo(nomeObjeto, codigo);
-        if (!acaoOk) return false;
+    /**
+     * @param {string} nomeObjeto
+     * @param {string} horario
+     */
+    ajustaPonteiros(nomeObjeto, horario) {
+        validate(nomeObjeto, "String");
+        validate(horario, "String");
+
+        if (!this.tem(nomeObjeto)) {
+            return false;
+        }
 
         const objeto = this.objetos.get(nomeObjeto);
-        if (objeto instanceof PortaDeSaida) {
-            this.engine.indicaFimDeJogo();
+        if (!(objeto instanceof RelogioAntigo)) {
+            console.log("Não é possível ajustar os ponteiros desse objeto.");
+            return false;
         }
+
+        const acaoOk = objeto.ajustaPonteiros(horario);
+        if (!acaoOk) return false;
+
+        const compartimento = new Compartimento();
+        this.objetos.set(compartimento.nome, compartimento);
 
         return true;
     }
 
-    ajustaPonteiros(nomeObjeto, horario) {
-        const acaoOk = super.ajustaPonteiros(nomeObjeto, horario);
-        if (!acaoOk) return false;
+    /** 
+     * @param {string} nomeObjeto
+     * @param {string} codigo  
+     */
+    discaCodigo(nomeObjeto, codigo) {
+        validate(nomeObjeto, "String");
+        validate(codigo, "String");
+
+        if (!this.tem(nomeObjeto)) {
+            return false;
+        }
 
         const objeto = this.objetos.get(nomeObjeto);
-        if (objeto instanceof RelogioAntigo) {
-            const compartimento = new Compartimento();
-            this.objetos.set(compartimento.nome, compartimento);
+        if (!(objeto instanceof PortaDeSaida)) {
+            console.log("Não é possível discar código nesse objeto.");
+            return false;
         }
+
+        const acaoOk = objeto.discaCodigo(codigo);
+        if (!acaoOk) return false;
+
+        this.engine.indicaFimDeJogo();
 
         return true;
     }

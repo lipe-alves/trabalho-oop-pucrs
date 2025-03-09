@@ -25,12 +25,6 @@ export class Ferramenta {
     get nome() {
         return this.#nome;
     }
-
-    /** @param {Sala} sala */
-    acende(sala) {
-        validate(sala, Sala);
-        return false;
-    }
 }
 
 export class Mochila {
@@ -50,7 +44,7 @@ export class Mochila {
     /** @param {string} nomeFerramenta */
     pega(nomeFerramenta) {
         validate(nomeFerramenta, "String");
-        let ferramenta = this.#ferramentas.find(f => f.nome === nomeFerramenta);
+        const ferramenta = this.#ferramentas.find(f => f.nome === nomeFerramenta);
         return ferramenta;
     }
 
@@ -58,6 +52,14 @@ export class Mochila {
     tem(nomeFerramenta) {
         validate(nomeFerramenta, "String");
         return this.#ferramentas.some(f => f.nome === nomeFerramenta);
+    }
+
+    /** @param {string} nomeFerramenta */
+    descarta(nomeFerramenta) {
+        validate(nomeFerramenta, "String");
+        const ferramenta = this.pega(nomeFerramenta);
+        this.#ferramentas = this.#ferramentas.filter(f => f.nome !== nomeFerramenta);
+        return ferramenta;
     }
 
     inventario() {
@@ -107,30 +109,11 @@ export class Objeto {
         }
     }
 
-    /** @param {string} codigo */
-    discaCodigo(codigo) {
-        validate(codigo, "String");
-        this.acaoOk = false;
-        return this.acaoOk;
-    }
-
-    /** @param {string} horario */
-    ajustaPonteiros(horario) {
-        validate(horario, "String");
-        this.acaoOk = false;
-        return this.acaoOk;
-    }
-
     /** @param {Ferramenta} ferramenta */
     usa(ferramenta) {
         validate(ferramenta, Ferramenta);
         this.acaoOk = false;
         return false;
-    }
-
-    empurra() {
-        this.acaoOk = false;
-        return this.acaoOk;
     }
 }
 
@@ -193,15 +176,18 @@ export class Sala {
         if (this.#objetos.size === 0) return "Não há objetos na sala";
 
         const arrObjs = [...this.#objetos.values()];
-        return arrObjs.map((obj) => {
-            let valor = obj.nome;
+        let descricao = arrObjs.reduce((itens, obj) => {
+            let valor = `   * ${obj.nome}`;
 
             if (obj.descricao) {
-                valor += ` (${obj.descricao})`;
+                valor += `: ${obj.descricao}`;
             }
 
-            return valor;
-        });
+            itens.push(valor);
+
+            return itens;
+        }, []).join("\n");
+        return "\n" + descricao;
     }
 
     get ferramentasDisponiveis() {
@@ -233,9 +219,11 @@ export class Sala {
         return this.objetos.has(nomeObjeto);
     }
 
+    /** @param {string} nomeFerramenta */
     pega(nomeFerramenta) {
         validate(nomeFerramenta, "String");
-        let ferramenta = this.#ferramentas.get(nomeFerramenta);
+
+        const ferramenta = this.#ferramentas.get(nomeFerramenta);
         if (ferramenta != null) {
             this.#engine.mochila.guarda(ferramenta);
             this.#ferramentas.delete(nomeFerramenta);
@@ -254,62 +242,6 @@ export class Sala {
     /** @param {string} porta */
     entra(porta) {
         return this.sai(porta);
-    }
-
-    /**
-     * @param {string} nomeObjeto
-     * @param {string} horario
-     */
-    ajustaPonteiros(nomeObjeto, horario) {
-        validate(nomeObjeto, "String");
-        validate(horario, "String");
-
-        if (!this.tem(nomeObjeto)) {
-            return false;
-        }
-
-        const objeto = this.objetos.get(nomeObjeto);
-        return objeto.ajustaPonteiros(horario);
-    }
-
-    /** 
-     * @param {string} nomeObjeto
-     * @param {string} codigo  
-     */
-    discaCodigo(nomeObjeto, codigo) {
-        validate(nomeObjeto, "String");
-        validate(codigo, "String");
-
-        if (!this.tem(nomeObjeto)) {
-            return false;
-        }
-
-        const objeto = this.objetos.get(nomeObjeto);
-        return objeto.discaCodigo(codigo);
-    }
-
-    /** @param {string} nomeFerramenta */
-    acende(nomeFerramenta) {
-        validate(nomeFerramenta, "String");
-
-        if (!this.engine.mochila.tem(nomeFerramenta)) {
-            return false;
-        }
-
-        const ferramenta = this.engine.mochila.pega(nomeFerramenta);
-        return ferramenta.acende(this);
-    }
-
-    /** @param {string} nomeObjeto */
-    empurra(nomeObjeto) {
-        validate(nomeObjeto, "String");
-
-        if (!this.tem(nomeObjeto)) {
-            return false;
-        }
-
-        const objeto = this.objetos.get(nomeObjeto);
-        return objeto.empurra();
     }
 
     /**
@@ -338,7 +270,9 @@ export class Sala {
 
 export class Engine {
     #mochila;
+    /** @type {Sala[]} */
     #salas;
+    /** @type {Sala} */
     #salaCorrente;
     #fim;
 
@@ -373,79 +307,83 @@ export class Engine {
 
     criaCenario() { }
 
+    /**
+     * @param {string} comando 
+     * @param  {string[]} argumentos 
+     */
+    executaComando(comando, argumentos) {
+        validate(comando, "String");
+        validate(argumentos, "Array.<String>");
+
+        switch (comando) {
+            case "fim":
+                this.#fim = true;
+                break;
+            case "pega":
+                const nomeObjeto = argumentos[0];
+
+                if (this.salaCorrente.pega(nomeObjeto)) {
+                    console.log(`Ok! ${nomeObjeto} guardado!`);
+                } else {
+                    console.log(`Objeto ${nomeObjeto} não encontrado.`);
+                }
+                break;
+            case "descarta":
+                const nomeFerramenta = argumentos[0];
+                const ferramenta = this.mochila.descarta(nomeFerramenta);
+
+                if (ferramenta) {
+                    this.salaCorrente.ferramentas.set(ferramenta.nome, ferramenta);
+                } else {
+                    console.log("Item não encontrado na mochila.");
+                }
+
+                break;
+            case "inventario":
+                console.log("Ferramentas disponíveis para uso: " + this.#mochila.inventario());
+                break;
+            case "usa":
+                if (this.salaCorrente.usa(argumentos[0], argumentos[1])) {
+                    console.log("Feito !!");
+                } else {
+                    console.log(`Não é possível usar ${argumentos[0]} sobre ${argumentos[1]} nesta sala`);
+                }
+                break;
+            case "sai":
+            case "entra":
+                const novaSala = this.salaCorrente.entra(argumentos[0]);
+                if (novaSala == null) {
+                    console.log("Sala desconhecida ...");
+                } else {
+                    this.#salaCorrente = novaSala;
+                }
+                break;
+            default:
+                return false;
+        }
+
+        return true;
+    }
+
     joga() {
-        let novaSala = null;
-        let acao = "";
-        let tokens = null;
         while (!this.#fim) {
             console.log("-------------------------");
             console.log(this.salaCorrente.descricaoCompleta);
-            acao = prompt("O que você deseja fazer? ");
-            tokens = acao.split(" ");
-            switch (tokens[0]) {
-                case "fim":
-                    this.#fim = true;
-                    break;
-                case "pega":
-                    if (this.salaCorrente.pega(tokens[1])) {
-                        console.log(`Ok! ${tokens[1]} guardado!`);
-                    } else {
-                        console.log(`Objeto ${tokens[1]} não encontrado.`);
-                    }
-                    break;
-                case "inventario":
-                    console.log("Ferramentas disponíveis para uso: " + this.#mochila.inventario());
-                    break;
-                case "usa":
-                    if (this.salaCorrente.usa(tokens[1], tokens[2])) {
-                        console.log("Feito !!");
-                    } else {
-                        console.log(`Não é possível usar ${tokens[1]} sobre ${tokens[2]} nesta sala`);
-                    }
-                    break;
-                case "ajusta":
-                case "ajusta_ponteiros":
-                case "ajusta_horario":
-                    if (this.salaCorrente.ajustaPonteiros(tokens[1], tokens[2])) {
-                        console.log("Feito !!");
-                    } else {
-                        console.log("Nada aconteceu!");
-                    }
-                    break;
-                case "disca":
-                case "disca_codigo":
-                case "codigo":
-                    if (this.salaCorrente.discaCodigo(tokens[1], tokens[2])) {
-                        console.log("Feito !!");
-                    } else {
-                        console.log("Código errado!");
-                    }
-                    break;
-                case "acende":
-                    if (this.salaCorrente.acende(tokens[1])) {
-                        console.log("Feito !!");
-                    } else {
-                        console.log(`Não é possível acender ${tokens[1]} nesta sala`);
-                    }
-                    break;
-                case "sai":
-                case "entra":
-                    novaSala = this.salaCorrente.entra(tokens[1]);
-                    if (novaSala == null) {
-                        console.log("Sala desconhecida ...");
-                    } else {
-                        this.#salaCorrente = novaSala;
-                    }
-                    break;
-                default:
-                    console.log("Comando desconhecido: " + tokens[0]);
-                    break;
+
+            const acao = prompt("O que você deseja fazer? ");
+            const tokens = acao.split(" ");
+            const [comando, ...argumentos] = tokens;
+
+            const comandoExecutado = this.executaComando(comando, [...argumentos]);
+            if (!comandoExecutado) {
+                console.log(`Comando desconhecido: ${comando}`);
             }
 
             if (this.#fim) {
                 console.log("Parabéns, você venceu!");
             }
         }
+
         console.log("Jogo encerrado!");
     }
 }

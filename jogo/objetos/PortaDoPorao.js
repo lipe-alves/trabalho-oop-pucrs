@@ -1,5 +1,5 @@
 import { Objeto } from "../basicas.js";
-import { ChaveDoPorao } from "../ferramentas/index.js";
+import { ChaveDoPorao, Grampo } from "../ferramentas/index.js";
 
 export class PortaDoPorao extends Objeto {
     constructor() {
@@ -9,10 +9,10 @@ export class PortaDoPorao extends Objeto {
             "A porta está destrancada, agora, você pode sair para a sala de estar."
         );
     }
-    
+
     usa(ferramenta) {
         super.usa(ferramenta);
-        this.acaoOk = ferramenta instanceof ChaveDoPorao;
+        this.acaoOk = ferramenta instanceof ChaveDoPorao || ferramenta instanceof Grampo;
         return this.acaoOk;
     }
 }
