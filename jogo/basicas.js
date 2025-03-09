@@ -322,7 +322,12 @@ export class Engine {
             case "pega":
                 const nomeObjeto = argumentos[0];
 
-                if (this.salaCorrente.pega(nomeObjeto)) {
+                if (nomeObjeto.includes(",")) {
+                    const objetos = nomeObjeto.split(",");
+                    for (const objeto of objetos) {
+                        this.executaComando(comando, [objeto]);
+                    }
+                } else if (this.salaCorrente.pega(nomeObjeto)) {
                     console.log(`Ok! ${nomeObjeto} guardado!`);
                 } else {
                     console.log(`Objeto ${nomeObjeto} não encontrado.`);

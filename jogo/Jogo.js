@@ -11,6 +11,20 @@ export class Jogo extends Engine {
 
         if (!executou) {
             switch (comando) {
+                case "abre": {
+                    const nomeObjeto = argumentos[0];
+
+                    if (typeof this.salaCorrente.abre === "function") {
+                        if (this.salaCorrente.abre(nomeObjeto)) {
+                            console.log("Feito !!");
+                        } else {
+                            console.log("Nada aconteceu!");
+                        }
+                    } else {
+                        console.log("Não é possível executar esse comando nesta sala");
+                    }
+                    break;
+                }
                 case "ajusta":
                 case "ajusta_ponteiros":
                 case "ajusta_horario": {

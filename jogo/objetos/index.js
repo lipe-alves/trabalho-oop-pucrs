@@ -3,3 +3,7 @@ export * from "./PortaDoPorao.js";
 export * from "./RelogioAntigo.js";
 export * from "./PortaDeSaida.js";
 export * from "./Compartimento.js";
+export * from "./GavetaDebaixo.js";
+export * from "./GavetaDeCima.js";
+export * from "./Geladeira.js";
+export * from "./Joia.js";

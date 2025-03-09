@@ -4,3 +4,5 @@ export * from "./Isqueiro.js";
 export * from "./Martelo.js";
 export * from "./Grampo.js";
 export * from "./Lupa.js";
+export * from "./Faca.js";
+export * from "./PanoDePrato.js";
