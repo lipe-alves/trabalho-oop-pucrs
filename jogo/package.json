@@ -5,6 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "prestart": "npm i",
     "start": "node index.js"
   },
   "keywords": [],
