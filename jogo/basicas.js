@@ -300,6 +300,7 @@ export class Engine {
 
     indicaFimDeJogo() {
         this.#fim = true;
+        console.log("Parabéns, você venceu!");
     }
 
     criaCenario() { }
@@ -379,10 +380,6 @@ export class Engine {
             const comandoExecutado = this.executaComando(comando, [...argumentos]);
             if (!comandoExecutado) {
                 console.log(`Comando desconhecido: ${comando}`);
-            }
-
-            if (this.#fim) {
-                console.log("Parabéns, você venceu!");
             }
         }
 
