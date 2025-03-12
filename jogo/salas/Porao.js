@@ -14,8 +14,8 @@ export class Porao extends Sala {
     }
 
     /** 
-     * O método que é executado depois do comando "acende", que é utilizado para acender o isqueiro para iluminar o porão.
-     * Esse deve ser o primeiro mmovimento do jogador, pois vários itens importantes estão escondidos pela escuridão.
+     * O método, que é executado depois do comando "acende", é utilizado para acender o isqueiro para iluminar o porão.
+     * Esse deve ser o primeiro movimento do jogador, pois vários itens importantes estão escondidos pela escuridão.
      * @param {string} nomeFerramenta 
      */
     acende(nomeFerramenta) {
@@ -65,9 +65,7 @@ export class Porao extends Sala {
         const objeto = this.objetos.get(nomeObjeto);
         const ferramenta = this.engine.mochila.pega(nomeFerramenta);
 
-        /**
-         * O jogador deve usar o comando "usa" para abrir a bailarina com a chave de fenda e descobrir a chave do porão escondida.
-         */
+        // O jogador deve usar o comando "usa" para abrir a bailarina com a chave de fenda e descobrir a chave do porão escondida.
         const abriuBailarina = objeto instanceof BailarinaMusical && ferramenta instanceof ChaveDeFenda;
         if (abriuBailarina) {
             const chaveEscondida = new ChaveDoPorao();

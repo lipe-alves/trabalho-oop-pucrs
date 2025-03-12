@@ -1,5 +1,5 @@
 import { Sala, Engine } from "../basicas.js";
-import { PanoDePrato, ChaveSecreta, Faca } from "../ferramentas/index.js";
+import { PanoDePrato, ChaveSecreta, Faca, Grampo } from "../ferramentas/index.js";
 import { Travesseiro, QuadroEmpoeirado, Armario, Abajur, PortaSecreta } from "../objetos/index.js";
 import { validate } from "bycontract";
 
@@ -115,13 +115,22 @@ export class Quarto extends Sala {
 
         // O jogador precisa usar a chave secreta do travesseiro para abrir a porta secreta.
         const destrancouPortaSecreta = (
-            ferramenta instanceof ChaveSecreta &&
-            objeto instanceof PortaSecreta
+            objeto instanceof PortaSecreta &&
+            (
+                ferramenta instanceof ChaveSecreta ||
+                ferramenta instanceof Grampo
+            )
         );
         if (destrancouPortaSecreta) {
-            // Se destrancou (usou a chave secreta na porta secreta), colocamos a passagem para a sala secreta no cenário.
+            // Se destrancou (usou a chave secreta ou grampo na porta secreta), colocamos a passagem para a sala secreta no cenário.
             const salaSecreta = this.engine.salas.get("Sala_Secreta");
             this.portas.set(salaSecreta.nome, salaSecreta);
+
+            if (ferramenta instanceof Grampo) {
+                // Se usou o grampo, o grampo "quebrou", então, usamos o descarta da mochila para o item desaparecer.
+                console.log("Grampo quebrou e não pode ser mais utilizado.");
+                this.engine.mochila.descarta(ferramenta.nome);
+            }
         }
 
         return acaoOk;
