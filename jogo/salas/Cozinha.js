@@ -3,6 +3,8 @@ import { Grampo, Lupa, PanoDePrato, Faca, Isqueiro } from "../ferramentas/index.
 import { Joia, Geladeira, GavetaDeCima, GavetaDebaixo } from "../objetos/index.js";
 import { validate } from "bycontract";
 
+
+/** Classe que representa a cozinha. */
 export class Cozinha extends Sala {
     /** @param {Engine} engine */
     constructor(engine) {

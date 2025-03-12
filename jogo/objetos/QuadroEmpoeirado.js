@@ -9,12 +9,14 @@ export class QuadroEmpoeirado extends Objeto {
         );
     }
 
+    /** Esse método é usado externamente para revelar os números, mudando a descrição do objeto. */
     revelaNumeros() {
         this.descricao = "O abajur ao iluminar o quadro revelou um número escondido: 7.";
     }
 
     usa(ferramenta) {
         super.usa(ferramenta);
+        // O jogador precisa usar o pano de prato para limpar o quadro para, em seguida, ligar o abajur e revelar o número.
         this.acaoOk = ferramenta instanceof PanoDePrato;
         if (this.acaoOk) this.descricao = "O quadro está em branco?";
         return this.acaoOk;

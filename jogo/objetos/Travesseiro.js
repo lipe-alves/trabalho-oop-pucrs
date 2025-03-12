@@ -11,6 +11,7 @@ export class Travesseiro extends Objeto {
 
     usa(ferramenta) {
         super.usa(ferramenta);
+        // O jogador precisa usar a faca para cortar o travesseiro e descobrir a chave.
         this.acaoOk = ferramenta instanceof Faca;
         if (this.acaoOk) this.descricao = "Você descobriu uma chave escondida!";
         return this.acaoOk;

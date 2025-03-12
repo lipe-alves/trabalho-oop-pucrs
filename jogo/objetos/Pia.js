@@ -11,7 +11,9 @@ export class Pia extends Objeto {
 
     usa(ferramenta) {
         super.usa(ferramenta);
+        // O jogador precisa usar a pinça para pegar o bilhete escondido no ralo.
         this.acaoOk = ferramenta instanceof Pinca;
+        // Se usou a pinça, muda a descrição para dizer o que tem escrito no bilhete.
         if (this.acaoOk) this.descricao = "O papel contém o seguinte número: 21.";
         return this.acaoOk;
     }

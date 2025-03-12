@@ -11,6 +11,7 @@ export class PortaDeSaida extends Objeto {
 
     discaCodigo(codigo) {
         validate(codigo, "String");
+        // Verifica se o código digitado é o certo.
         this.acaoOk = codigo === "5813";
         if (this.acaoOk) this.descricao = "A porta está destrancada, agora, você pode sair para a sala de estar.";
         return this.acaoOk;

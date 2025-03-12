@@ -3,6 +3,7 @@ import { BailarinaMusical, PortaDoPorao } from "../objetos/index.js";
 import { ChaveDoPorao, ChaveDeFenda, Martelo, Grampo, Isqueiro } from "../ferramentas/index.js";
 import { validate } from "bycontract";
 
+/** Classe que representa o porão. A parte inicial do jogo. */
 export class Porao extends Sala {
     /** @param {Engine} engine */
     constructor(engine) {
@@ -12,7 +13,11 @@ export class Porao extends Sala {
         this.ferramentas.set(isqueiro.nome, isqueiro);
     }
 
-    /** @param {string} nomeFerramenta */
+    /** 
+     * O método que é executado depois do comando "acende", que é utilizado para acender o isqueiro para iluminar o porão.
+     * Esse deve ser o primeiro mmovimento do jogador, pois vários itens importantes estão escondidos pela escuridão.
+     * @param {string} nomeFerramenta 
+     */
     acende(nomeFerramenta) {
         validate(nomeFerramenta, "String");
 
@@ -60,12 +65,20 @@ export class Porao extends Sala {
         const objeto = this.objetos.get(nomeObjeto);
         const ferramenta = this.engine.mochila.pega(nomeFerramenta);
 
+        /**
+         * O jogador deve usar o comando "usa" para abrir a bailarina com a chave de fenda e descobrir a chave do porão escondida.
+         */
         const abriuBailarina = objeto instanceof BailarinaMusical && ferramenta instanceof ChaveDeFenda;
         if (abriuBailarina) {
             const chaveEscondida = new ChaveDoPorao();
             this.ferramentas.set(chaveEscondida.nome, chaveEscondida);
         }
 
+        /**
+         * Em seguida, deve usar a chave do porão para abrir a porta do porão. 
+         * Porém, ele pode usar também o grampo para abrir a porta, mas, o grampo só pode ser usado 1 vez e ele deve ser usado mais adiante no jogo. 
+         * O jogador precisa tomar a melhor decisão nesta hora.
+         */
         const abriuPorta = (
             objeto instanceof PortaDoPorao && (
                 ferramenta instanceof ChaveDoPorao || 
@@ -74,10 +87,12 @@ export class Porao extends Sala {
         );
         if (abriuPorta) {
             const salaDeEstar = this.engine.salas.get("Sala_de_Estar");
+            // Abriu porta? Cria passagem.
             this.portas.set(salaDeEstar.nome, salaDeEstar);
             this.objetos.delete(objeto);
 
             if (ferramenta instanceof Grampo) {
+                // Se usou o grampo, o grampo "quebrou", então, usamos o descarta da mochila para o item desaparecer.
                 console.log("Grampo quebrou e não pode ser mais utilizado.");
                 this.engine.mochila.descarta(ferramenta.nome);
             }

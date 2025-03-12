@@ -2,6 +2,7 @@ import { Sala, Engine } from "../basicas.js";
 import { Cofre } from "../objetos/index.js";
 import { validate } from "bycontract";
 
+/** Classe que representa o quarto secreto da casa, que contém a pista mais importante do jogo. */
 export class SalaSecreta extends Sala {
     /** @param {Engine} engine */
     constructor(engine) {
@@ -23,6 +24,7 @@ export class SalaSecreta extends Sala {
             return false;
         }
 
+        // Só existe o objeto Cofre nesta sala e é o único que recebe o comando disca.
         const objeto = this.objetos.get(nomeObjeto);
         if (!(objeto instanceof Cofre)) {
             console.log("Não é possível discar código nesse objeto.");

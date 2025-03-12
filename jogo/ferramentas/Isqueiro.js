@@ -7,7 +7,10 @@ export class Isqueiro extends Ferramenta {
         super("Isqueiro");
     }
 
-    /** @param {Sala} sala */
+    /**
+     * O isqueiro pode ser acendido em várias salas, mas somente na sala do porão é que ele terá efeito. 
+     * @param {Sala} sala 
+     */
     acende(sala) {
         validate(sala, Sala);
         return sala instanceof Porao;
