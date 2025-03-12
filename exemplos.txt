@@ -1,0 +1,45 @@
+A seguinte sequência de comandos testa todas as salas, objetos e ferramentas:
+
+pega Isqueiro
+acende Isqueiro
+pega Martelo,Grampo,Chave_de_Fenda
+usa Chave_de_Fenda Bailarina_Musical
+pega Chave_do_Porao
+usa Chave_do_Porao Porta_do_Porao
+entra Sala_de_Estar
+entra Cozinha
+abre Gaveta_de_Cima
+pega Pano_de_Prato,Faca
+usa Grampo Gaveta_Debaixo
+pega Lupa
+usa Isqueiro Geladeira
+usa Martelo Joia_Verde
+entra Sala_de_Estar
+ajusta Relogio_Antigo 15:10:00
+usa Lupa Compartimento_do_Relogio
+entra Quarto
+liga Abajur
+usa Pano_de_Prato Quadro_Empoeirado
+empurra Armario
+usa Faca Travesseiro
+pega Chave_Secreta
+usa Chave_Secreta Porta_Secreta
+entra Banheiro
+pega Pinca
+usa Pinca Pia
+entra Quarto
+entra Sala_Secreta
+disca Cofre 3721
+entra Quarto
+entra Sala_de_Estar
+disca Porta_de_Saida 5813
+
+Alternativamente, você pode executar ainda os seguintes casos:
+
+1) Abrir porta do porão com o grampo:
+usa Grampo Porta_do_Porao
+
+2) Abrir porta secreta com o grampo:
+usa Grampo Porta_Secreta
+
+Porém, esses dois comandos são erros que o jogador pode cometer que impedirão a vitória no game.
