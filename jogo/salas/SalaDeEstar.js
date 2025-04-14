@@ -70,7 +70,7 @@ export class SalaDeEstar extends Sala {
         if (!acaoOk) return false;
 
         // Se digitou o código correto (acaoOk === true), significa que destravou a porta de saída da casa e venceu o jogo.
-        this.engine.indicaFimDeJogo();
+        this.engine.indicaVitoria();
 
         return true;
     }

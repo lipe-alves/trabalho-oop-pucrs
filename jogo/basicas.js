@@ -35,6 +35,14 @@ export class Mochila {
         this.#ferramentas = [];
     }
 
+    get limiteMaximo() {
+        return 5;
+    }
+
+    get limiteAtingido() {
+        return this.#ferramentas.length >= this.limiteMaximo;
+    }
+
     /** @param {Ferramenta} ferramenta */
     guarda(ferramenta) {
         validate(ferramenta, Ferramenta);
@@ -298,7 +306,12 @@ export class Engine {
         this.#salaCorrente = sala;
     }
 
-    indicaFimDeJogo() {
+    /**
+     * Método que finaliza o jogo e printa uma mensagem de vitória.
+     * O único local onde esse método é chamado é na classe SalaDeEstar, quando 
+     * o jogador digita o código secreto da PortaDeSaida. 
+     */
+    indicaVitoria() {
         this.#fim = true;
         console.log("Parabéns, você venceu!");
     }
@@ -315,6 +328,7 @@ export class Engine {
 
         switch (comando) {
             case "fim":
+                // Finaliza o jogo sem mensagem de vitória.
                 this.#fim = true;
                 break;
             case "pega":
@@ -325,6 +339,9 @@ export class Engine {
                     for (const objeto of objetos) {
                         this.executaComando(comando, [objeto]);
                     }
+                } else if (this.mochila.limiteAtingido) {
+                    console.log("Limite máximo atingido!");
+                    console.log("Só cabem", this.mochila.limiteMaximo, "itens na mochila.");
                 } else if (this.salaCorrente.pega(nomeObjeto)) {
                     console.log(`Ok! ${nomeObjeto} guardado!`);
                 } else {
